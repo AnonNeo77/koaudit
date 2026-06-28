@@ -75,25 +75,3 @@ python3 koaudit.py --html module.ko
 * Modules are **not** executed.
 * A clean result does not guarantee a module is safe.
 * Detection is based on implemented heuristics and may not identify every technique.
-
----
-
-## Testing
-
-Run the test suite:
-
-```bash
-python3 -m unittest discover tests
-```
-
----
-
-## Contributing
-
-Bug reports, improvements, and pull requests are welcome.
-
----
-
-## License
-
-Released under the MIT License.
