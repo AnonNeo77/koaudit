@@ -24,7 +24,7 @@ KOAUDIT inspects compiled Linux kernel modules (`.ko`) and reports suspicious be
 ## Installation
 
 ```bash
-git clone https://github.com/<username>/koaudit.git
+git clone https://github.com/AnonNeo77/koaudit.git
 cd koaudit
 
 pip install -r requirements.txt
