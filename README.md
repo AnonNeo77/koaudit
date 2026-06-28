@@ -1,94 +1,99 @@
-# 🛡️ koaudit: Linux Kernel Module Static Auditor
+# KOAUDIT
 
-`koaudit` is a fast, lightweight, and deterministic static analysis tool designed to audit compiled Linux kernel modules (`.ko`) for suspicious or malicious behavior before they are loaded into kernel memory.
+Static analysis tool for Linux kernel modules.
 
-The tool parses ELF properties, reconstructs call graphs, and applies heuristic checks entirely locally. It follows the traditional Unix utility philosophy: fast, deterministic, and easy to audit.
-
----
-
-## 🚀 Key Features
-
-- **Robust ELF Validation**: Gracefully handles malformed, truncated, or stripped ELF headers without crashing. Automatically rejects unlinked compiler object files (`.o`).
-- **Control Flow Graph Cache**: Reconstructs function branch graphs from relocations, caching reachability checks to ensure high performance on large drivers.
-- **Factual Behavioral Detections**:
-  - **Syscall Hooking**: CR0/SCTLR write-protection register bypasses, sys_call_table modifications, and kallsyms redirects.
-  - **Evasive Hooking**: Dynamic function hooks using `ftrace`, `kprobes`, or notifier callbacks.
-  - **Rootkit Backdoors**: Unlocked/compat IOCTL handlers, procfs/debugfs gateways, and Netfilter packet interceptors.
-  - **Evasion Tactics**: Section entropy checks (packing/obfuscation) and unlinking self-hiding operations inside initialization routines.
-- **Minimal Unix CLI**: Standard flags for format controls and verbose reporting (`--json`, `--html`, `--version`).
-- **Clean Reports**: Stripped of numerical score metrics and dramatic wording; groups output logically by severity and prints a clear behavior list.
+KOAUDIT inspects compiled Linux kernel modules (`.ko`) and reports suspicious behaviors commonly associated with kernel rootkits, insecure drivers, and malicious modules. Analysis is performed statically — modules are never loaded or executed.
 
 ---
 
-## 📦 Installation & Setup
+## Features
 
-1. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Standalone Binaries**:
-   We distribute pre-compiled standalone executables for Linux (`x86_64` and `ARM64`) on every tagged release. Check the **Releases** tab to download.
+* Static analysis of Linux kernel modules (`.ko`)
+* ELF validation and metadata inspection
+* Detection of common kernel hook patterns
+* Detection of write-protection bypasses
+* Detection of credential manipulation APIs
+* Detection of custom IOCTL interfaces
+* Detection of dynamic symbol resolution
+* Detection of suspicious module metadata
+* JSON and HTML report output
+* Lightweight with no external services
 
 ---
 
-## 💻 Usage
+## Installation
 
 ```bash
-# Auditing a module with default text summary to stdout
-koaudit module.ko
+git clone https://github.com/<username>/koaudit.git
+cd koaudit
 
-# Output JSON report
-koaudit --json module.ko
-
-# Output HTML report
-koaudit --html module.ko
-
-# Verbose scanning details
-koaudit --verbose module.ko
-
-# Version details
-koaudit --version
-```
-
-### Example Terminal Output
-```
-KOAUDIT
-Target: antipatterns_module.ko
-Status: Suspicious
-
-Findings
-──────────────────────────────────
-[HIGH]
-• Custom IOCTL interface detected
-  - Function: ap_ioctl
-  - Reason: User-space control interface.
-
-[SUSPICIOUS]
-• Module name differs from filename.
-  - Internal: antipatterns
-  - File: antipatterns_module.ko
-
-Summary
-──────────────────────────────────
-Status: Suspicious
-
-Detected:
-• Module name differs from filename
-• Custom IOCTL interface detected
-
-Recommendation:
-Review the source before loading this module.
+pip install -r requirements.txt
 ```
 
 ---
 
-## 🧪 Testing
+## Usage
 
-Run the automated test suite locally:
 ```bash
-python3 -m unittest discover -s tests -p "test_*.py"
+python3 koaudit.py module.ko
 ```
 
-## 📄 License
-Distributed under the MIT License. See [LICENSE](LICENSE) for details.
+Verbose output:
+
+```bash
+python3 koaudit.py --verbose module.ko
+```
+
+JSON report:
+
+```bash
+python3 koaudit.py --json module.ko
+```
+
+HTML report:
+
+```bash
+python3 koaudit.py --html module.ko
+```
+
+---
+
+## Current Detection Rules
+
+* Write-protection bypasses
+* Kernel tracing hooks
+* Credential manipulation APIs
+* Custom IOCTL interfaces
+* Dynamic symbol resolution
+* Module metadata anomalies
+
+---
+
+## Limitations
+
+* Static analysis only.
+* Modules are **not** executed.
+* A clean result does not guarantee a module is safe.
+* Detection is based on implemented heuristics and may not identify every technique.
+
+---
+
+## Testing
+
+Run the test suite:
+
+```bash
+python3 -m unittest discover tests
+```
+
+---
+
+## Contributing
+
+Bug reports, improvements, and pull requests are welcome.
+
+---
+
+## License
+
+Released under the MIT License.
